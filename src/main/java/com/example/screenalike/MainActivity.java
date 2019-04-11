@@ -36,7 +36,7 @@ private static MainActivity sAppInstance;
         setContentView(R.layout.activity_main);
         mscreenHelper = new screenHelper(this);
        TextView myAwesomeTextView = (TextView)findViewById(R.id.editText);
-        myAwesomeTextView.setText(getAppData().getServerAddress());
+        myAwesomeTextView.setText("Twitch ID: " + getAppData().getTwitchID());
         ToggleButton toggle = (ToggleButton) findViewById(R.id.btn_start_stream);
                 mHandlerThread = new HandlerThread(
                 ScreenAlike.class.getSimpleName(),
@@ -48,6 +48,7 @@ private static MainActivity sAppInstance;
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     buttonClicked=true;
+                    getAppData().createConnection();
                     final MediaProjectionManager projectionManager = getProjectionManager();
                     if (projectionManager != null) {
                         startActivityForResult(projectionManager.createScreenCaptureIntent(), REQUEST_CODE_SCREEN_CAPTURE);

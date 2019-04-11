@@ -97,6 +97,7 @@ public final class HttpServer {
             try (final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(socket.getOutputStream(), "UTF8")) {
                 outputStreamWriter.write("HTTP/1.1 200 OK\r\n");
                 outputStreamWriter.write("Content-Type: image/png\r\n");
+
                 outputStreamWriter.write("Connection: close\r\n");
                 outputStreamWriter.write("\r\n");
                 outputStreamWriter.flush();

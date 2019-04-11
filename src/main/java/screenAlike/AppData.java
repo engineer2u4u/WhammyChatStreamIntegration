@@ -9,11 +9,15 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import com.example.screenalike.R;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.InetAddress;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -39,6 +43,7 @@ public final class AppData {
     private final SharedPreferences mSharedPreferences;
     private volatile int mServerPort;
     private String DEFAULT_SERVER_PORT = "8080";
+    private Socket mSocket;
     public AppData(final Context context) {
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         mWifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -124,6 +129,23 @@ public final class AppData {
         return null;
     }
 
+    public void createConnection(){
+        try{
+            mSocket = IO.socket("http://ec2-3-121-200-132.eu-central-1.compute.amazonaws.com:8080"); //AWS Public Server Address
+    } catch (
+    URISyntaxException e) {}
+            mSocket.connect();
+    }
+
+    public  String getTwitchID(){
+        return "TWITCH_CLIENT_ID";
+
+    }
+
+    public Socket getSocketConnection()
+    {
+        return mSocket;
+    }
 
     public int getServerPort(){
         return mServerPort;

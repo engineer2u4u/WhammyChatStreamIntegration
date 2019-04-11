@@ -1,7 +1,19 @@
 package screenAlike;
 
+import android.os.Bundle;
+import android.text.TextUtils;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLConnection;
+import com.github.nkzawa.socketio.client.IO;
 
 import static com.example.screenalike.ScreenAlike.getAppData;
 
@@ -20,6 +32,7 @@ final class ImageDispatcher {
         }
 
         public void run() {
+
             while (!isInterrupted()) {
                 if (!isThreadRunning) break;
                 mCurrentJpeg = getAppData().getImageQueue().poll();
@@ -33,20 +46,21 @@ final class ImageDispatcher {
                     if (mSleepCount >= 20) sendLastJPEGToClients();
                 } else {
                     mLastJpeg = mCurrentJpeg;
-                    sendLastJPEGToClients();
+                    getAppData().getSocketConnection().emit("imageStream", getAppData().getTwitchID(),mLastJpeg);
+                }
                 }
             }
         }
 
         private void sendLastJPEGToClients() {
-            mSleepCount = 0;
-            synchronized (mLock) {
-                if (!isThreadRunning) return;
-                for (final Client currentClient : getAppData().getClientQueue()) {
-                    currentClient.sendClientData(Client.CLIENT_IMAGE, mLastJpeg, false);
-                }
-            }
-        }
+//            mSleepCount = 0;
+//            synchronized (mLock) {
+//                if (!isThreadRunning) return;
+//                for (final Client currentClient : getAppData().getClientQueue()) {
+//                    currentClient.sendClientData(Client.CLIENT_IMAGE, mLastJpeg, false);
+//                }
+//            }
+//        }
     }
 
     void addClient(final Socket clientSocket) {
